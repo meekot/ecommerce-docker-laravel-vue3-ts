@@ -26,6 +26,7 @@ services:
       - app-network
       - postgres-network
       - redis-network
+      - frontend-network
   redis:
     image: bitnami/redis:6.0
     container_name: redis
@@ -41,7 +42,7 @@ services:
     depends_on:
       - backend
   postgres:
-    container_name: postgres_container
+    container_name: postgres
     image: postgres
     environment:
       POSTGRES_USER: ${DB_USERNAME}
@@ -56,12 +57,27 @@ services:
     restart: unless-stopped
     depends_on:
       - backend
-
+  frontend: 
+    image: node:latest
+    container_name: frontend
+    working_dir: /var/app/
+    entrypoint: bash -c "npm install && npm run dev"
+    environment:
+      DEV_PORT: ${FRONTEND_DEV_PORT:-8324}
+      PREV_PORT: ${FRONTEND_PREVIEW_PORT:-8240}
+    ports:
+      - ${FRONTEND_DEV_PORT:-8324}:${FRONTEND_DEV_PORT:-8324}
+      - ${FRONTEND_PREVIEW_PORT:-8240}:${FRONTEND_PREVIEW_PORT:-8240}
+    volumes:
+      - ./backend:/var/app
+    networks:
+      - frontend-network
 
 networks:
   app-network:
   postgres-network:
   redis-network:
+  frontend-network:
 
 volumes:
   app-data:
