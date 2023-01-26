@@ -1,21 +1,77 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Dashboard from '../pages/Dashboard.vue';
-import Login from '../pages/Login.vue';
+import { useAppStore } from '../store/app';
+
+declare module 'vue-router' {
+  interface RouteMeta {
+    requiresAuth?: boolean;
+    requiresGuest?: boolean;
+  }
+}
 
 const routes = [
   {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: Dashboard,
+    path: '/app',
+    name: 'app',
+    component: () => import('../components/AppLayout.vue'),
+    meta: {
+      requiresAuth: true,
+    },
+    children: [
+      {
+        path: 'dashboard',
+        name: 'app.dashboard',
+        component: () => import('../pages/Dashboard.vue'),
+      },
+      {
+        path: 'products',
+        name: 'app.products',
+        component: () => import('../pages/Dashboard.vue'),
+      },
+    ],
+  },
+  {
+    path: '/reset-password/:token',
+    name: 'resetPassword',
+    component: () => import('../pages/Auth.vue'),
+    props: {
+      resetPasswordForm: true,
+    },
+    meta: {
+      requiresGuest: true,
+    },
   },
   {
     path: '/login',
     name: 'login',
-    component: Login,
+    component: () => import('../pages/Auth.vue'),
+    meta: {
+      requiresGuest: true,
+    },
+  },
+  {
+    path: '/:pathMatch(.*)',
+    name: 'notFound',
+    component: () => import('../pages/NotFound.vue'),
   },
 ];
 
-export const router = createRouter({
+const router = createRouter({
   history: createWebHistory(),
   routes,
 });
+
+router.beforeEach((to, from, next) => {
+  const appStore = useAppStore();
+
+  if (to.meta.requiresAuth && !appStore.isAuthenticated) {
+    return next({ name: 'login' });
+  }
+
+  if (to.meta.requiresGuest && appStore.isAuthenticated) {
+    return next({ name: 'app.dashboard' });
+  }
+
+  next();
+});
+
+export { router };

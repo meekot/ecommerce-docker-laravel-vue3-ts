@@ -1,6 +1,5 @@
 import { createApp } from 'vue';
 import { Quasar } from 'quasar';
-import { createPinia } from 'pinia';
 
 // Import icon libraries
 import '@quasar/extras/roboto-font/roboto-font.css';
@@ -20,14 +19,13 @@ import './assets/styles/style.css';
 
 import App from './App.vue';
 import { router } from './router';
-
-const pinia = createPinia();
+import { pinia } from './store';
 
 const app = createApp(App);
 
 app.use(Quasar, {
   plugins: {}, // import Quasar plugins and add here
-  /*
+  /*~
   config: {
     brand: {
       // primary: '#e46262',

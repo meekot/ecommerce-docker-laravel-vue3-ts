@@ -16,6 +16,13 @@ export default defineConfig({
       sassVariables: 'src/assets/styles/quasar-variables.sass',
     }),
   ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        indentedSyntax: true,
+      },
+    },
+  },
   server: {
     host: '0.0.0.0',
     port: Number(process.env.DEV_PORT) || 3000,
