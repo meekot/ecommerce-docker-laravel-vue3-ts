@@ -25,8 +25,8 @@ export const useAppStore = defineStore({
       });
       this.$router.push({ name: 'app.dashboard' });
     },
-    async logout() {
-      await Auth.logout();
+    logout() {
+      Auth.logout();
       this.userToken = null;
       sessionStorage.removeItem('USER_TOKEN');
       this.$router.push({ name: 'login' });
