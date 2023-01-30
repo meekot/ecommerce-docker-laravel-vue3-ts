@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Resources\ProductListResource;
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +16,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    dd(\App\Models\User::all());
+    return view('pages.home.index', ["products" => ProductListResource::collection(Product::query()->orderBy('updated_at', 'desc')->paginate(8))->resolve()]);
 
 });

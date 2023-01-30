@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
@@ -57,8 +58,8 @@ class AuthController extends Controller
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
-    public function getUser(Request $request): JsonResponse
+    public function getUser(Request $request): JsonResource
     {
-        return new JsonResponse(new UserResource($request->user()));
+        return new UserResource($request->user());
     }
 }

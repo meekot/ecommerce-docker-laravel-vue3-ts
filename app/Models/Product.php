@@ -4,6 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 /**
  * App\Models\Product
@@ -44,4 +50,39 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     use HasFactory;
+    use HasSlug;
+    use SoftDeletes;
+
+    public const IMAGE_DISK = 'images';
+    public const IMAGE_PATH = 'products';
+
+
+    protected $fillable = ['title', 'description', 'price', 'image', 'image_mime', 'image_size', 'created_by', 'updated_by'];
+
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('title')
+            ->saveSlugsTo('slug');
+    }
+
+    public function getImageUrl(): ?string 
+    {  
+        return $this->image? 
+            URL::to(
+                Storage::disk(self::IMAGE_DISK)
+                    ->url(sprintf(
+                        '%s/%s', 
+                        self::IMAGE_PATH, 
+                        $this->image
+                    ))
+            ): null;
+    }
+
+    public function delete(): void
+    {
+        $this->deleted_at = now();
+        $this->deleted_by = Auth::user()->id;
+        $this->save();
+    }
 }

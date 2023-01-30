@@ -26,7 +26,7 @@ services:
       - app-network
       - postgres-network
       - redis-network
-      - frontend-network
+      - backoffice-app-network
   redis:
     image: bitnami/redis:6.0
     container_name: redis
@@ -57,29 +57,40 @@ services:
     restart: unless-stopped
     depends_on:
       - backend
-  frontend: 
+  backoffice-app: 
+    image: node:latest
+    container_name: backoffice-app
+    working_dir: /var/app/
+    entrypoint: bash -c "npm install && npm run dev"
+    environment:
+      DEV_PORT: ${BACKOFFICE_APP_DEV_PORT:-8324}
+      PREV_PORT: ${BACKOFFICE_APP_PREVIEW_PORT:-8240}
+      VITE_APP_BASE_URL: ${APP_URL}
+    ports:
+      - ${BACKOFFICE_APP_DEV_PORT:-8324}:${BACKOFFICE_APP_DEV_PORT:-8324}
+      - ${BACKOFFICE_APP_PREVIEW_PORT:-8240}:${BACKOFFICE_APP_PREVIEW_PORT:-8240}
+    volumes:
+      - ./BackofficeApp:/var/app
+    networks:
+      - backoffice-app-network
+  
+  frontend:
     image: node:latest
     container_name: frontend
     working_dir: /var/app/
     entrypoint: bash -c "npm install && npm run dev"
     environment:
-      DEV_PORT: ${FRONTEND_DEV_PORT:-8324}
-      PREV_PORT: ${FRONTEND_PREVIEW_PORT:-8240}
-      VITE_APP_BASE_URL: ${APP_URL}
-
+      DEV_PORT: ${FRONTEND_DEV_PORT:-7546}
+      PREV_PORT: ${FRONTEND_PREVIEW_PORT:-7548}
     ports:
-      - ${FRONTEND_DEV_PORT:-8324}:${FRONTEND_DEV_PORT:-8324}
-      - ${FRONTEND_PREVIEW_PORT:-8240}:${FRONTEND_PREVIEW_PORT:-8240}
+      - ${FRONTEND_DEV_PORT:-7546}:${FRONTEND_DEV_PORT:-7546}
+      - ${FRONTEND_PREVIEW_PORT:-7548}:${FRONTEND_PREVIEW_PORT:-7548}
     volumes:
-      - ./backend:/var/app
+      - ./:/var/app
     networks:
-      - frontend-network
-
+      - app-network
 networks:
   app-network:
   postgres-network:
   redis-network:
-  frontend-network:
-
-volumes:
-  app-data:
+  backoffice-app-network:
