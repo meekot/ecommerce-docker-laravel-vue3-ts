@@ -4312,6 +4312,63 @@ blockquote span {
     color: #fff;
     background-color: var(--bs-primary);
 }
+
+/*======================================
+    Call Action CSS
+========================================*/
+.call-action {
+  background-color: var(--bs-primary);
+}
+
+.call-action .content {
+  text-align: center;
+}
+
+.call-action .content h2 {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 42px;
+  color: var(--bs-white);
+  display: block;
+  margin-bottom: 20px;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+  .call-action .content h2 {
+    font-size: 28px;
+    line-height: 35px;
+  }
+}
+
+@media (max-width: 767px) {
+  .call-action .content h2 {
+    font-size: 22px;
+    line-height: 32px;
+  }
+}
+
+.call-action .content p {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--bs-white);
+}
+
+.call-action .content .button {
+  margin-top: 30px;
+}
+
+.call-action .content .button .btn {
+  background-color: var(--bs-white);
+  color: var(--bs-secondary);
+}
+
+.call-action .content .button .btn:hover {
+  color: var(--bs-white);
+  background: var(--bs-secondary);
+}
+
+
+
 .item-details {
     background-color: #f9f9f9;
 }

@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<x-app-layout>
   <!-- Start Hero Area -->
   <section class="hero-area">
       <div class="container">
@@ -157,5 +155,4 @@
       </div>
   </section>
   <!-- End Banner Area -->
-
-@endsection
+</x-app-layout>

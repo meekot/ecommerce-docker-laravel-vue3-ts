@@ -17,5 +17,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('pages.home.index', ["products" => ProductListResource::collection(Product::query()->orderBy('updated_at', 'desc')->paginate(8))->resolve()]);
-
 });
+
+Route::view('/login', 'pages.login');
+Route::view('/register', 'pages.register');
+
